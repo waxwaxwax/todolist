@@ -1,10 +1,14 @@
+/* 全体のレイアウト: 大きな画面では max-width を設定、中央寄せ */
 body {
     font-family: Arial, sans-serif;
-    width: 50%;
-    margin: auto;
     background-color: #FCF6EF; /* 背景色 */
+    margin: 0 auto;
+    max-width: 700px; /* PC時の最大幅を設定 */
+    width: 90%;       /* 画面幅の9割を使う */
+    padding: 20px 0;  /* 上下に少し余白 */
 }
 
+/* タイトル */
 h1 {
     display: flex;
     align-items: center;
@@ -12,13 +16,16 @@ h1 {
     font-size: 28px;
     font-weight: bold;
     gap: 10px; /* 画像とテキストの間隔 */
+    margin-bottom: 20px; /* タイトルとフォームの間隔 */
 }
 
+/* タイトル横のロゴ */
 .title-logo {
     width: 50px;
     height: auto;
 }
 
+/* フォーム */
 form {
     display: flex;
     justify-content: center;
@@ -26,13 +33,16 @@ form {
     gap: 10px; /* 入力欄とボタンの間隔 */
 }
 
+/* 入力欄 */
 input[type="text"] {
-    width: 70%;
+    flex: 1; /* 幅を可変に */
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 16px;
 }
 
+/* ボタン */
 button {
     padding: 10px 20px;
     border: none;
@@ -40,13 +50,16 @@ button {
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 16px;
 }
 
+/* タスク一覧リスト */
 ul {
     list-style-type: none;
     padding: 0;
 }
 
+/* タスクアイテム */
 li {
     background: #f9f9f9;
     margin: 5px 0;
@@ -58,6 +71,7 @@ li {
     cursor: grab;
 }
 
+/* タスク番号 */
 .task-number {
     color: gray;
     font-size: 14px;
@@ -65,29 +79,82 @@ li {
     font-weight: bold;
 }
 
+/* チェックボックス */
 .task-checkbox {
     margin-right: 10px;
     cursor: pointer;
 }
 
+/* タスクテキスト */
 .task-text {
     flex-grow: 1;
     text-align: left;
 }
 
+/* 完了済みタスクのスタイル */
 .done {
     text-decoration: line-through;
     color: gray;
     opacity: 0.6;
 }
 
+/* 削除ボタン */
 .delete-btn {
     text-decoration: none;
     font-size: 18px;
     cursor: pointer;
 }
 
+/* ドラッグ中のタスク */
 .sortable-ghost {
     opacity: 0.5;
     background: lightgray;
+}
+
+/* --- メディアクエリ: スマホ画面 (幅 480px 以下) 向けに調整 --- */
+@media (max-width: 480px) {
+    body {
+        width: 95%;      /* スマホではさらに余白を減らす */
+        padding: 10px 0; /* 縦の余白をやや減らす */
+    }
+
+    h1 {
+        font-size: 24px; /* タイトル文字を少し小さく */
+        margin-bottom: 15px;
+    }
+
+    .title-logo {
+        width: 40px;     /* ロゴも縮小 */
+    }
+
+    form {
+        flex-direction: column; /* 入力欄とボタンを縦並びに */
+        align-items: stretch;   /* 幅いっぱい使う */
+    }
+
+    input[type="text"] {
+        width: 100%;
+        margin-bottom: 10px; /* ボタンとの間隔 */
+        font-size: 14px;
+    }
+
+    button {
+        width: 100%;         /* ボタンも全幅に */
+        font-size: 14px;
+    }
+
+    li {
+        flex-direction: column; /* タスク番号・チェックボックス・テキストを縦並びに */
+        align-items: flex-start;
+    }
+
+    .task-number,
+    .task-checkbox {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+
+    .task-text {
+        margin-bottom: 5px;
+    }
 }
