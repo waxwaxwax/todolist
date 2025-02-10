@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Mitsuhiro's Simple ToDo List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('serve_assets', filename='profile-pic.png') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+</head>
+<body>
+    <h1>
+        <img src="{{ url_for('serve_assets', filename='profile-pic.png') }}" alt="Logo" class="title-logo">
+        Mitsuhiro's Simple ToDo List
+    </h1>
+    
+    <form action="{{ url_for('add') }}" method="POST">
+        <input type="text" name="content" placeholder="新しいタスクを入力">
+        <button type="submit">追加</button>
+    </form>
+
+    <ul id="task-list">
+        {% for task in tasks %}
+            <li data-task-id="{{ loop.index0 }}" draggable="true">
+                <span class="task-number">#{{ loop.index0 + 1 }}</span>
+                <input type="checkbox" class="task-checkbox" data-task-id="{{ loop.index0 }}" {% if task.done %}checked{% endif %}>
+                <span class="task-text {% if task.done %}done{% endif %}">{{ task.content }}</span>
+                <a href="{{ url_for('delete', task_id=loop.index0) }}" class="delete-btn">🗑️</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        const taskList = document.getElementById('task-list');
+
+        new Sortable(taskList, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onEnd: function () {
+                let newOrder = [];
+                document.querySelectorAll("#task-list li").forEach((el, index) => {
+                    newOrder.push({ id: el.dataset.taskId, position: index });
+
+                    // ✅ タスク番号をリアルタイムで更新
+                    el.querySelector(".task-number").textContent = `#${index + 1}`;
+                });
+
+                fetch('/reorder', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ order: newOrder })
+                }).then(response => response.json()).then(data => {
+                    console.log("順番が更新されました:", data);
+                });
+            }
+        });
+
+        document.querySelectorAll(".task-checkbox").forEach(checkbox => {
+            checkbox.addEventListener("change", function() {
+                fetch(`/toggle/${this.dataset.taskId}`, { method: "GET" })
+                .then(() => location.reload());
+            });
+        });
+    </script>
+</body>
+</html>
